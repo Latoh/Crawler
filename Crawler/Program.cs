@@ -5,7 +5,7 @@ var url = "https://kidskimberry.en.alibaba.com/product/1600425793258-823061133/2
 Crawler.startCrawlerAsync(url);
 Console.ReadLine();
 
-class Crawler
+partial class Crawler
 {
     public static async Task startCrawlerAsync(string url)
     {
@@ -13,9 +13,11 @@ class Crawler
 
         var itemName = GetItemName(htmlDocument);
         var itemPriceList = GetItemPriceList(htmlDocument);
-        GetItemSize(htmlDocument);
+        var itemSizeList = GetItemSizeList(htmlDocument);
+        var itemImageList = GetItemImageList(htmlDocument);
 
-        var product = Product.Create(itemName, itemPriceList);
+        var product = Product.Create(itemName, itemPriceList, itemSizeList,
+            itemImageList);
 
         Console.WriteLine(product.Name);
     }
@@ -52,11 +54,34 @@ class Crawler
         return itemPriceList;
     }
 
-    public static void GetItemSize(HtmlDocument htmlDocument)
+    public static ItemSizeList GetItemSizeList(HtmlDocument htmlDocument)
     {
-        var modulePriceList = htmlDocument.DocumentNode.Descendants("span")
+        var moduleSizeList = htmlDocument.DocumentNode.Descendants("span")
             .Where(n => n.GetAttributeValue("class", "").Contains("sku-attr-val-frame")
             && !n.GetAttributeValue("class", "").Contains("picture-frame")).ToList();
 
+        var itemSizeList = ItemSizeList.Create();
+
+        foreach (var item in moduleSizeList)
+        {
+            itemSizeList.Add(ItemSize.Create(item.InnerText));
+        }
+
+        return itemSizeList;
+    }
+
+    public static ItemImageList GetItemImageList(HtmlDocument htmlDocument)
+    {
+        var imageList = htmlDocument.DocumentNode.Descendants("li")
+            .Where(n => n.GetAttributeValue("class", "").Contains("main-image-thumb-item")).ToList();
+
+        var itemImageList = ItemImageList.Create();
+
+        foreach (var item in imageList)
+        {
+            itemImageList.Add(ItemImage.Create(item.InnerHtml));
+        }
+
+        return itemImageList;
     }
 }

@@ -12,18 +12,18 @@
     {
 
         return new ItemPrice()
-            .SubstringPieces(itemPrice)
-            .SubstringPrice(itemPrice);
+            .SetPieces(itemPrice)
+            .SetPrice(itemPrice);
     }
 
-    public ItemPrice SubstringPieces(string itemPrice)
+    public ItemPrice SetPieces(string itemPrice)
     {
         var index = itemPrice.IndexOf("$");
         Pieces = itemPrice.Substring(0, index);
         return this;
     }
 
-    public ItemPrice SubstringPrice(string itemPrice)
+    public ItemPrice SetPrice(string itemPrice)
     {
         var index = itemPrice.IndexOf("$");
         Price = Convert.ToDecimal(itemPrice.Substring(index + 1));
