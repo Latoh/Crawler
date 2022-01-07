@@ -18,8 +18,9 @@
 
     public ItemPrice SetPieces(string itemPrice)
     {
-        var index = itemPrice.IndexOf("$");
-        Pieces = itemPrice.Substring(0, index);
+        var startIndex = itemPrice.IndexOf("-") + 1;
+        var endIndex = itemPrice.IndexOf("P") - startIndex;
+        Pieces = itemPrice.Substring(startIndex, endIndex).Trim();
         return this;
     }
 
